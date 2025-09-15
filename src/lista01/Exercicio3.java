@@ -1,5 +1,6 @@
 package lista01;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Exercicio3 {
@@ -7,40 +8,70 @@ public class Exercicio3 {
 	public static void main(String[] args) {
 
 		Scanner leia = new Scanner(System.in);
-        
         String nomeDoador;
-        int idadeDoador;
-        boolean primeiraDoacao;
+        int idadeDoador = 0;
+        String generoDoador;
+        boolean primeiraDoacao = false;
+        boolean entradaValida;
+        String aptidaoFinal;
 
         System.out.println("Digite o Nome do doador: ");
         nomeDoador = leia.nextLine();
-
-        System.out.println("Digite a Idade do doador: ");
-        idadeDoador = leia.nextInt();
-
-        System.out.println("Primeira doação de sangue? (true/false) ");
-        primeiraDoacao = leia.nextBoolean();
-
-        boolean aptoParaDoar = false;
-
-        if (idadeDoador >= 18 && idadeDoador <= 69) {
-            if (idadeDoador >= 60 && idadeDoador <= 69) {
-                if (!primeiraDoacao) {
-                    aptoParaDoar = true;
-                }
-            } else {
-                aptoParaDoar = true;
+        
+        // Validação da Idade
+        do {
+            try {
+                System.out.println("Digite a Idade do doador: ");
+                idadeDoador = leia.nextInt();
+                entradaValida = true;
+            } catch (InputMismatchException erro) {
+                System.out.println("Entrada inválida! Por favor, digite um número inteiro.");
+                leia.next();
+                entradaValida = false;
             }
-        }
+        } while (!entradaValida);
 
+        leia.nextLine(); // Limpa o buffer para a próxima leitura
+
+        // Nova entrada para o gênero
+        do {
+            System.out.println("Digite o Gênero do doador (F/M): ");
+            generoDoador = leia.nextLine().toUpperCase();
+            if (generoDoador.equals("F") || generoDoador.equals("M")) {
+                entradaValida = true;
+            } else {
+                System.out.println("Entrada inválida! Por favor, digite 'F' para Feminino ou 'M' para Masculino.");
+                entradaValida = false;
+            }
+        } while (!entradaValida);
+        
+        // Validação da Primeira Doação
+        do {
+            try {
+                System.out.println("É a primeira doação de sangue? (true/false) ");
+                primeiraDoacao = leia.nextBoolean();
+                entradaValida = true;
+            } catch (InputMismatchException erro) {
+                System.out.println("Entrada inválida! Por favor, digite 'true' ou 'false'.");
+                leia.next();
+                entradaValida = false;
+            }
+        } while (!entradaValida);
+
+        // Lógica para determinar se a pessoa é apta
+        boolean aptoParaDoar = (idadeDoador >= 18 && idadeDoador < 60) || 
+                               (idadeDoador >= 60 && idadeDoador <= 69 && !primeiraDoacao);
+
+        // Lógica para definir a palavra 'apto' ou 'apta'
         if (aptoParaDoar) {
-            System.out.println("\n" + nomeDoador + " está apto(a) para doar sangue!");
+            aptidaoFinal = (generoDoador.equals("F")) ? "apta" : "apto";
         } else {
-            System.out.println("\n" + nomeDoador + " não está apto(a) para doar sangue!");
+            aptidaoFinal = (generoDoador.equals("F")) ? "não está apta" : "não está apto";
         }
+        
+        System.out.println("\nDoador: " + nomeDoador);
+        System.out.println("Status: " + aptidaoFinal + " para doar sangue.");
 
         leia.close();
-
-	}
-
+    }
 }
